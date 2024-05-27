@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MVC.Models;
 
-namespace MVC.Data
+namespace MVC.Models
 {
     public class MVCContext : DbContext
     {
@@ -14,6 +14,8 @@ namespace MVC.Data
         {
         }
 
-        public DbSet<MVC.Models.Department> Department { get; set; } = default!;
+        public DbSet<Department> Department { get; set; } = default!;
+        public DbSet<Seller> Seller { get; set; }
+        public  DbSet<SalesRecord> SalesRecord { get; set; }
     }
 }
