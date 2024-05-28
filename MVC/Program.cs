@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MVC.Data;
+using MVC.Models;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MVCContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MVCContext") ?? throw new InvalidOperationException("Connection string 'MVCContext' not found.")));
-    //options.UseMySql(builder.Configuration.GetConnectionString("MVCContext"), builder => builder.MigrationsAssembly("MVC")));
+//options.UseMySql(builder.Configuration.GetConnectionString("MVCContext"), builder => builder.MigrationsAssembly("MVC")));
 
+builder.Services.AddScoped<SeedingService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
