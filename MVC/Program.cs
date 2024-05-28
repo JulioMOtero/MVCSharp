@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MVC.Data;
 using MVC.Models;
+using MVC.Services;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddDbContext<MVCContext>(options =>
 //options.UseMySql(builder.Configuration.GetConnectionString("MVCContext"), builder => builder.MigrationsAssembly("MVC")));
 
 builder.Services.AddScoped<SeedingService>();
+builder.Services.AddScoped<SellerService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
