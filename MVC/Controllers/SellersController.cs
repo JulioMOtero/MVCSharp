@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using MVC.Models;
 using MVC.Models.ViewModels;
 using MVC.Services;
+using MVC.Services.Exceptions;
 
 namespace MVC.Controllers
 {
@@ -12,13 +13,13 @@ namespace MVC.Controllers
         private readonly SellerService _sellerService;
         private readonly DepartmentService _departmentService;
 
-        public SellersController(SellerService sellerService,DepartmentService departmentService)
+        public SellersController(SellerService sellerService, DepartmentService departmentService)
         {
             _sellerService = sellerService;
             _departmentService = departmentService;
         }
 
- 
+
 
 
         public IActionResult Index()
@@ -30,7 +31,7 @@ namespace MVC.Controllers
         public IActionResult Create()
         {
             var departments = _departmentService.FindAll();
-            var viewModel = new SellerFormViewModel { Departments = departments };  
+            var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
         [HttpPost]
@@ -44,7 +45,7 @@ namespace MVC.Controllers
 
         public IActionResult Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -76,6 +77,45 @@ namespace MVC.Controllers
                 return NotFound();
             }
             return View(obj);
+        }
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel sellerFormViewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            return View(sellerFormViewModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException ex)
+            {
+                return BadRequest();
+            }
         }
     }
 }
