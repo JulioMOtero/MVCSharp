@@ -53,7 +53,7 @@ namespace MVC.Controllers
             {
                 return NotFound();
             }
-            return NotFound();
+            return View(obj);
         }
 
         [HttpPost]
@@ -62,7 +62,20 @@ namespace MVC.Controllers
         {
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
+        }
 
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
         }
     }
 }
