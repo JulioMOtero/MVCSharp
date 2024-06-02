@@ -33,6 +33,13 @@ namespace MVC.Services
 
         public async Task RemoveAsync(int id)
         {
+            try
+            {
+
+            }catch(DbUpdateException ex)
+            {
+                throw new IntegrityException(ex.Message);
+            }
             var obj = await _context.Seller.FindAsync(id);
             _context.Seller.Remove(obj);
             _context.SaveChangesAsync();
