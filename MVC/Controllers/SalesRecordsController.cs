@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using MVC.Services;
 
 namespace MVC.Controllers
@@ -32,9 +33,20 @@ namespace MVC.Controllers
             var result = await _salesRecordsService.FindByDateAsync(min, max);
             return  View(result);
         }
-        public IActionResult GroupingSearch()
+        public async Task<IActionResult> GroupingSearch(DateTime? min, DateTime? max)
         {
-            return View();
+            if (!min.HasValue)
+            {
+                min = new DateTime(DateTime.Now.Year, 1, 1);
+            }
+            if (!max.HasValue)
+            {
+                min = DateTime.Now;
+            }
+            ViewData["min"] = min.Value.ToString("yyyy-MM-dd");
+            ViewData["max"] = max.Value.ToString("yyyy-MM-dd");
+            var result = await _salesRecordsService.FindByDateGroupingAsync(min, max);
+            return View(result);
         }
     }
 }
